@@ -28,9 +28,13 @@ public class Run {
 		
 		Compte[] comptes = client.getTabCompte();
 		
+		//Foreach: pour chaques comptes présent dans comptes
 		for (Compte compte : comptes) {
+			// si compte est de la famille de CompteRemunere
 			if(compte instanceof CompteRemunere) {
+				// DownCast de Compte vers CompteRemunere
 				CompteRemunere cpt = (CompteRemunere) compte;
+				// appel de la methode verserInteret propre à CompteRemunere
 				cpt.verserInterets();
 			}
 		}
