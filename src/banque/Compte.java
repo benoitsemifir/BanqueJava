@@ -1,5 +1,7 @@
 package banque;
 
+import banque.Exceptions.BanqueExceptionSeuil;
+
 public class Compte {
 	
 	private double solde;
@@ -40,7 +42,7 @@ public class Compte {
 		this.solde += montant;
 	}
 	
-	public void retirer(double montant) {
+	public void retirer(double montant) throws BanqueExceptionSeuil {
 		this.solde -= montant;
 	}
 

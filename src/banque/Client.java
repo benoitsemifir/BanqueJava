@@ -1,6 +1,9 @@
 package banque;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import banque.Exceptions.BanqueExceptionCompteMax;
 
 public class Client {
 
@@ -8,17 +11,31 @@ public class Client {
 	private String prenom;
 	private int age;
 	private int numero;
-	private Compte[] tabCompte;
+	private Map<Integer, Compte> tabCompte = new HashMap<Integer, Compte>(); //<--
 	
 	public Client() {
 		this("","",0,0);
 	}
 	
 	public Client(String nom, String prenom, int age, int numero) {
-		this(nom, prenom, age, numero, new Compte[5]);
+		this(nom, prenom, age, numero, new HashMap<Integer, Compte>());
 	}
 	
 	public Client(String nom, String prenom, int age, int numero, Compte[] comptes) {
+		this.nom = nom;
+		this.prenom = prenom;
+		this.setAge(age);
+		this.setNumero(numero);
+		
+		////////////////////
+		for(Compte compte: comptes) {
+			if(compte != null) {				
+				this.tabCompte.put(compte.getNumero(), compte);
+			}
+		}
+	}
+	
+	public Client(String nom, String prenom, int age, int numero, Map<Integer, Compte> comptes) {// <---
 		this.nom = nom;
 		this.prenom = prenom;
 		this.setAge(age);
@@ -63,28 +80,59 @@ public class Client {
 	}
 	
 	public Compte[] getTabCompte() {
-		return tabCompte;
+		/*
+		 * Version décomposée
+		Collection<Compte> cpt = this.tabCompte.values();
+		return cpt.toArray(new Compte[5]);
+		*/
+		return this.tabCompte.values().toArray(new Compte[5]);
+		//return tabCompte.toArray(new Compte[5]); //<--
 	}
 
 	public void setTabCompte(Compte[] tabCompte) {
-		this.tabCompte = tabCompte;
+		
+		Map<Integer, Compte> newMap = new HashMap<>();
+		for (Compte compte: tabCompte) {
+			newMap.put(compte.getNumero(), compte);
+		}
+		this.tabCompte = newMap;
+
+		//this.tabCompte = Arrays.asList(tabCompte); //<--
 	}
 
-	public void ajouterCompte(Compte compte) {
+	public void ajouterCompte(Compte compte) throws BanqueExceptionCompteMax {
+		/* Array
 		for (int i = 0; i < this.tabCompte.length ; i++ ) {
 			if(this.tabCompte[i] == null) {
 				this.tabCompte[i] = compte;
 				return;
 			}
+		}*/
+		/* List
+		if(this.tabCompte.size()<= 5) {
+			this.tabCompte.add(compte);			
+		}else {			
+			throw new BanqueExceptionCompteMax("Le client a déja 5 comptes");
 		}
-		System.out.println("Le client a déja 5 comptes");
+		*/
+		// Map
+		if(this.tabCompte.size() <= 5) {
+			this.tabCompte.put(compte.getNumero(), compte);
+		}else {
+			throw new BanqueExceptionCompteMax("Le client a déja 5 comptes");
+		}
 	}
 	
 	public Compte getCompte(int numeroCompte) {
+		/*// façon List
 		for(Compte compte : this.tabCompte) {
 				if(compte != null && compte.getNumero() == numeroCompte) {
 					return compte;
 				}
+		}
+		*/
+		if(this.tabCompte.containsKey(numeroCompte)) {
+			return this.tabCompte.get(numeroCompte);
 		}
 		System.out.println("Aucun compte avec ce numéro");
 		return null;
@@ -93,7 +141,7 @@ public class Client {
 	@Override
 	public String toString() {
 		return "Client [numero=" + this.numero + ", nom=" + this.nom + ", prenom=" + this.prenom + ", age=" + this.age + ", tabCompte="
-				+ Arrays.toString(this.tabCompte) + "]";
+				+ this.tabCompte.toString() + "]";
 	}
 	
 }

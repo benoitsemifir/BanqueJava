@@ -29,6 +29,16 @@ public class CompteRemunere extends Compte {
 		return this.taux * this.getSolde();
 	}
 	
+	/**
+	 * Permet d'appeler statiquement calculerInteret (sans instancier d'objet CompteRemunere)
+	 * @param compteR Le compte rémunéré sur lequel calcuer les interets.
+	 * @return interets Les interets calculés.
+	 */
+	public static double calculerInteret(CompteRemunere compteR) {
+		double interets = compteR.getSolde() * compteR.getTaux();
+		return interets;
+	}
+	
 	public void verserInterets() {
 		double interets = this.calculerInterets();
 		this.ajouter(interets);
